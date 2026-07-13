@@ -1,0 +1,6 @@
+{
+  "name": "DISC Prajurit Digital",
+  "description": "Tes Kepribadian DISC Online Gratis, Cepat, dan Akurat dari Prajurit Digital.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
