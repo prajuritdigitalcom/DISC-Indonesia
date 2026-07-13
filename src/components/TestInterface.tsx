@@ -184,7 +184,46 @@ export default function TestInterface({
         
         {/* Test Header with Progress & Exit Button */}
         <div className="bg-white dark:bg-gray-950 p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm transition-all duration-300 mb-8">
-          <div className="flex justify-between items-center mb-4">
+          {/* Mobile-only Header (Centered Timer on top, Progress & Close on bottom) */}
+          <div className="flex flex-col sm:hidden space-y-4 mb-4">
+            <div className="flex justify-center">
+              <div className="flex items-center space-x-2 bg-gray-50 dark:bg-gray-900 px-4 py-2 rounded-xl border border-gray-100 dark:border-gray-800">
+                <Timer className="h-4 w-4 text-[#fe4c6f] shrink-0" />
+                <span className="font-mono text-sm font-bold text-gray-700 dark:text-gray-200">
+                  {formatTime(elapsedTime)}
+                </span>
+                <button
+                  onClick={() => setTimerOn(!timerOn)}
+                  className="p-1.5 rounded-md text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors cursor-pointer"
+                  title={timerOn ? "Jeda Waktu" : "Mulai Waktu"}
+                >
+                  {timerOn ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4 fill-current" />}
+                </button>
+              </div>
+            </div>
+
+            <div className="flex justify-between items-center border-t border-gray-100 dark:border-gray-800/60 pt-3">
+              <div>
+                <span className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  Progress Tes DISC
+                </span>
+                <p className="text-base font-black text-gray-900 dark:text-white leading-tight mt-0.5">
+                  Soal {currentIndex + 1} dari {questions.length}
+                </p>
+              </div>
+
+              <button
+                onClick={() => setShowExitConfirm(true)}
+                className="p-2.5 rounded-xl bg-gray-50 dark:bg-gray-900 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 border border-gray-100 dark:border-gray-800 transition-colors cursor-pointer"
+                title="Keluar dari Tes"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+          </div>
+
+          {/* Desktop/Tablet Header (Original side-by-side design) */}
+          <div className="hidden sm:flex justify-between items-center mb-4">
             <div>
               <span className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                 Progress Tes DISC

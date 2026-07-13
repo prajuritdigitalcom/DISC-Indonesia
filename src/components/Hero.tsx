@@ -30,8 +30,10 @@ export default function Hero({ onStartTest }: HeroProps) {
               transition={{ duration: 0.5 }}
               className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-rose-50 dark:bg-rose-950/40 border border-rose-100 dark:border-rose-900/50 text-[#fe4c6f] text-xs font-semibold tracking-wide mb-6"
             >
-              <Sparkles className="h-3.5 w-3.5" />
-              <span>100% GRATIS • TANPA REGISTRASI • HASIL INSTAN</span>
+              <Sparkles className="h-3.5 w-3.5 shrink-0" />
+              <span className="text-center">
+                <span className="inline-block whitespace-nowrap">100% GRATIS</span> • <span className="inline-block whitespace-nowrap">TANPA REGISTRASI</span> • <span className="inline-block whitespace-nowrap">HASIL INSTAN</span>
+              </span>
             </motion.div>
 
             <motion.h1
@@ -81,7 +83,7 @@ export default function Hero({ onStartTest }: HeroProps) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.4 }}
-              className="mt-8 grid grid-cols-2 gap-y-3 gap-x-4 max-w-md mx-auto lg:mx-0 text-left text-sm text-gray-500 dark:text-gray-400"
+              className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-4 max-w-md mx-auto lg:mx-0 text-left text-sm text-gray-500 dark:text-gray-400"
             >
               <div className="flex items-center space-x-2">
                 <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
