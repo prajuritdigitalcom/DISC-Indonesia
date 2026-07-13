@@ -73,7 +73,9 @@ export default function App() {
   const handleSaveProgress = (
     answers: Record<number, DISCAnswer>,
     currentIndex: number,
-    elapsedTime: number
+    elapsedTime: number,
+    questionOrder?: number[],
+    optionOrder?: Record<number, string[]>
   ) => {
     const updatedState: TestState = {
       answers,
@@ -81,6 +83,8 @@ export default function App() {
       isCompleted: false,
       useTimer: true,
       elapsedTime,
+      questionOrder,
+      optionOrder,
     };
     setTestState(updatedState);
     localStorage.setItem("disc_test_state", JSON.stringify(updatedState));
@@ -187,6 +191,8 @@ export default function App() {
                 initialIndex={testState.currentQuestionIndex}
                 useTimer={testState.useTimer}
                 initialElapsedTime={testState.elapsedTime}
+                initialQuestionOrder={testState.questionOrder}
+                initialOptionOrder={testState.optionOrder}
                 onSaveProgress={handleSaveProgress}
                 onComplete={handleComplete}
                 onCancel={handleCancelTest}

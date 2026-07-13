@@ -10,4 +10,6 @@ export interface TestState {
   isCompleted: boolean;
   useTimer: boolean;
   elapsedTime: number; // in seconds
+  questionOrder?: number[];
+  optionOrder?: Record<number, string[]>;
 }

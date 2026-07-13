@@ -4,12 +4,30 @@ import { motion, AnimatePresence } from "motion/react";
 import { DISCQuestion, questions } from "../data/questions";
 import { DISCAnswer } from "../types";
 
+// Fisher-Yates shuffle helper
+function shuffleArray<T>(array: T[]): T[] {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
 interface TestInterfaceProps {
   initialAnswers: Record<number, DISCAnswer>;
   initialIndex: number;
   useTimer: boolean;
   initialElapsedTime: number;
-  onSaveProgress: (answers: Record<number, DISCAnswer>, currentIndex: number, elapsedTime: number) => void;
+  initialQuestionOrder?: number[];
+  initialOptionOrder?: Record<number, string[]>;
+  onSaveProgress: (
+    answers: Record<number, DISCAnswer>,
+    currentIndex: number,
+    elapsedTime: number,
+    questionOrder?: number[],
+    optionOrder?: Record<number, string[]>
+  ) => void;
   onComplete: (answers: Record<number, DISCAnswer>) => void;
   onCancel: () => void;
 }
@@ -19,6 +37,8 @@ export default function TestInterface({
   initialIndex,
   useTimer: initialUseTimer,
   initialElapsedTime,
+  initialQuestionOrder,
+  initialOptionOrder,
   onSaveProgress,
   onComplete,
   onCancel,
@@ -31,9 +51,38 @@ export default function TestInterface({
   const [showResetConfirm, setShowResetConfirm] = useState<boolean>(false);
   const [direction, setDirection] = useState<number>(1); // 1 = forward, -1 = backward
 
+  // Keep track of stable shuffled order of questions
+  const [questionOrder, setQuestionOrder] = useState<number[]>(() => {
+    if (initialQuestionOrder && initialQuestionOrder.length > 0) {
+      return initialQuestionOrder;
+    }
+    const ids = questions.map((q) => q.id);
+    return shuffleArray(ids);
+  });
+
+  // Keep track of stable shuffled options for each question
+  const [optionOrder, setOptionOrder] = useState<Record<number, string[]>>(() => {
+    if (initialOptionOrder && Object.keys(initialOptionOrder).length > 0) {
+      return initialOptionOrder;
+    }
+    const orderRecord: Record<number, string[]> = {};
+    questions.forEach((q) => {
+      orderRecord[q.id] = shuffleArray(q.options.map((opt) => opt.id));
+    });
+    return orderRecord;
+  });
+
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  const currentQuestion = questions[currentIndex];
+  const currentQuestionId = questionOrder[currentIndex] || questions[0].id;
+  const currentQuestion = questions.find((q) => q.id === currentQuestionId) || questions[0];
+
+  // Save generated shuffle order on mount if not already present
+  useEffect(() => {
+    if (!initialQuestionOrder || !initialOptionOrder) {
+      onSaveProgress(answers, currentIndex, elapsedTime, questionOrder, optionOrder);
+    }
+  }, []);
 
   // Timer interval effect
   useEffect(() => {
@@ -41,7 +90,7 @@ export default function TestInterface({
       timerRef.current = setInterval(() => {
         setElapsedTime((prev) => {
           const next = prev + 1;
-          onSaveProgress(answers, currentIndex, next);
+          onSaveProgress(answers, currentIndex, next, questionOrder, optionOrder);
           return next;
         });
       }, 1000);
@@ -52,7 +101,7 @@ export default function TestInterface({
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [timerOn, currentIndex, answers]);
+  }, [timerOn, currentIndex, answers, questionOrder, optionOrder]);
 
   // Format timer text (MM:SS)
   const formatTime = (seconds: number) => {
@@ -90,7 +139,7 @@ export default function TestInterface({
     };
 
     setAnswers(updatedAnswers);
-    onSaveProgress(updatedAnswers, currentIndex, elapsedTime);
+    onSaveProgress(updatedAnswers, currentIndex, elapsedTime, questionOrder, optionOrder);
   };
 
   const handleNext = () => {
@@ -104,7 +153,7 @@ export default function TestInterface({
       setTimeout(() => {
         setCurrentIndex((prev) => {
           const next = prev + 1;
-          onSaveProgress(answers, next, elapsedTime);
+          onSaveProgress(answers, next, elapsedTime, questionOrder, optionOrder);
           return next;
         });
       }, 50);
@@ -118,14 +167,14 @@ export default function TestInterface({
       if (allFilled) {
         onComplete(answers);
       } else {
-        // Find first incomplete question
-        const firstIncomplete = questions.findIndex((q) => {
-          const ans = answers[q.id];
+        // Find first incomplete question in shuffled order
+        const firstIncompleteIdx = questionOrder.findIndex((qId) => {
+          const ans = answers[qId];
           return !ans || !ans.mostOptionId || !ans.leastOptionId;
         });
-        if (firstIncomplete !== -1) {
-          setDirection(firstIncomplete > currentIndex ? 1 : -1);
-          setCurrentIndex(firstIncomplete);
+        if (firstIncompleteIdx !== -1) {
+          setDirection(firstIncompleteIdx > currentIndex ? 1 : -1);
+          setCurrentIndex(firstIncompleteIdx);
         }
       }
     }
@@ -137,7 +186,7 @@ export default function TestInterface({
       setTimeout(() => {
         setCurrentIndex((prev) => {
           const next = prev - 1;
-          onSaveProgress(answers, next, elapsedTime);
+          onSaveProgress(answers, next, elapsedTime, questionOrder, optionOrder);
           return next;
         });
       }, 50);
@@ -146,11 +195,19 @@ export default function TestInterface({
 
   const handleResetTest = () => {
     const clearedAnswers: Record<number, DISCAnswer> = {};
+    const newQuestionOrder = shuffleArray(questions.map((q) => q.id));
+    const newOptionOrder: Record<number, string[]> = {};
+    questions.forEach((q) => {
+      newOptionOrder[q.id] = shuffleArray(q.options.map((opt) => opt.id));
+    });
+
+    setQuestionOrder(newQuestionOrder);
+    setOptionOrder(newOptionOrder);
     setAnswers(clearedAnswers);
     setCurrentIndex(0);
     setElapsedTime(0);
     setShowResetConfirm(false);
-    onSaveProgress(clearedAnswers, 0, 0);
+    onSaveProgress(clearedAnswers, 0, 0, newQuestionOrder, newOptionOrder);
   };
 
   const totalAnswered = questions.filter((q) => {
@@ -180,7 +237,7 @@ export default function TestInterface({
 
   return (
     <div className="min-h-[calc(100vh-4rem)] py-8 sm:py-12 bg-gradient-to-b from-gray-50 via-white to-gray-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 transition-colors duration-300">
-      <div className="max-w-3xl mx-auto px-4">
+      <div className="max-w-4xl mx-auto px-4">
         
         {/* Test Header with Progress & Exit Button */}
         <div className="bg-white dark:bg-gray-950 p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm transition-all duration-300 mb-8">
@@ -309,56 +366,63 @@ export default function TestInterface({
 
               {/* Choices List */}
               <div className="space-y-4 mt-6">
-                {currentQuestion.options.map((opt) => {
-                  const isMost = currentAnswer.mostOptionId === opt.id;
-                  const isLeast = currentAnswer.leastOptionId === opt.id;
+                {(() => {
+                  const order = optionOrder[currentQuestion.id] || currentQuestion.options.map(o => o.id);
+                  const orderedOptions = order
+                    .map(optId => currentQuestion.options.find(o => o.id === optId))
+                    .filter((o): o is typeof currentQuestion.options[number] => !!o);
 
-                  return (
-                    <div
-                      key={opt.id}
-                      className={`flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:p-5 rounded-2xl border transition-all duration-200 ${
-                        isMost
-                          ? "border-emerald-200 dark:border-emerald-900 bg-emerald-50/50 dark:bg-emerald-950/10"
-                          : isLeast
-                          ? "border-rose-200 dark:border-rose-900 bg-rose-50/30 dark:bg-rose-950/5"
-                          : "border-gray-100 dark:border-gray-850 hover:border-gray-200 dark:hover:border-gray-800"
-                      }`}
-                    >
-                      <span className="text-sm sm:text-base font-semibold text-gray-800 dark:text-gray-200 leading-snug sm:pr-4 mb-4 sm:mb-0">
-                        {opt.text}
-                      </span>
+                  return orderedOptions.map((opt) => {
+                    const isMost = currentAnswer.mostOptionId === opt.id;
+                    const isLeast = currentAnswer.leastOptionId === opt.id;
 
-                      {/* Selection Column buttons */}
-                      <div className="flex items-center gap-2.5 w-full sm:w-auto justify-end">
-                        {/* MOST Button */}
-                        <button
-                          onClick={() => handleSelectOption(opt.id, "MOST")}
-                          className={`flex-1 sm:flex-initial flex items-center justify-center space-x-1.5 px-4 py-2.5 sm:py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer min-h-[44px] sm:min-h-0 ${
-                            isMost
-                              ? "bg-emerald-500 text-white border-emerald-500 shadow-md shadow-emerald-100 dark:shadow-none font-extrabold"
-                              : "bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400 hover:text-emerald-500 border-gray-200 dark:border-gray-700 hover:border-emerald-200 dark:hover:border-emerald-900"
-                          }`}
-                        >
-                          <ThumbsUp className="h-4 w-4 shrink-0" />
-                          <span>Paling Sesuai</span>
-                        </button>
+                    return (
+                      <div
+                        key={opt.id}
+                        className={`flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:p-5 rounded-2xl border transition-all duration-200 ${
+                          isMost
+                            ? "border-emerald-200 dark:border-emerald-900 bg-emerald-50/50 dark:bg-emerald-950/10"
+                            : isLeast
+                            ? "border-rose-200 dark:border-rose-900 bg-rose-50/30 dark:bg-rose-950/5"
+                            : "border-gray-100 dark:border-gray-850 hover:border-gray-200 dark:hover:border-gray-800"
+                        }`}
+                      >
+                        <span className="text-sm sm:text-base font-semibold text-gray-800 dark:text-gray-200 leading-snug sm:pr-4 mb-4 sm:mb-0">
+                          {opt.text}
+                        </span>
 
-                        {/* LEAST Button */}
-                        <button
-                          onClick={() => handleSelectOption(opt.id, "LEAST")}
-                          className={`flex-1 sm:flex-initial flex items-center justify-center space-x-1.5 px-4 py-2.5 sm:py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer min-h-[44px] sm:min-h-0 ${
-                            isLeast
-                              ? "bg-rose-500 text-white border-rose-500 shadow-md shadow-rose-100 dark:shadow-none font-extrabold"
-                              : "bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400 hover:text-rose-500 border-gray-200 dark:border-gray-700 hover:border-rose-200 dark:hover:border-rose-900"
-                          }`}
-                        >
-                          <ThumbsDown className="h-4 w-4 shrink-0" />
-                          <span>Kurang Sesuai</span>
-                        </button>
+                        {/* Selection Column buttons */}
+                        <div className="flex items-center gap-2.5 w-full sm:w-auto justify-end sm:shrink-0">
+                          {/* MOST Button */}
+                          <button
+                            onClick={() => handleSelectOption(opt.id, "MOST")}
+                            className={`flex-1 sm:flex-initial sm:w-[150px] sm:shrink-0 flex items-center justify-center space-x-1.5 px-4 py-2.5 sm:py-2.5 rounded-xl text-xs font-bold border transition-all cursor-pointer min-h-[44px] sm:min-h-0 ${
+                              isMost
+                                ? "bg-emerald-500 text-white border-emerald-500 shadow-md shadow-emerald-100 dark:shadow-none font-extrabold"
+                                : "bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400 hover:text-emerald-500 border-gray-200 dark:border-gray-700 hover:border-emerald-200 dark:hover:border-emerald-900"
+                            }`}
+                          >
+                            <ThumbsUp className="h-4 w-4 shrink-0" />
+                            <span>Paling Sesuai</span>
+                          </button>
+
+                          {/* LEAST Button */}
+                          <button
+                            onClick={() => handleSelectOption(opt.id, "LEAST")}
+                            className={`flex-1 sm:flex-initial sm:w-[150px] sm:shrink-0 flex items-center justify-center space-x-1.5 px-4 py-2.5 sm:py-2.5 rounded-xl text-xs font-bold border transition-all cursor-pointer min-h-[44px] sm:min-h-0 ${
+                              isLeast
+                                ? "bg-rose-500 text-white border-rose-500 shadow-md shadow-rose-100 dark:shadow-none font-extrabold"
+                                : "bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400 hover:text-rose-500 border-gray-200 dark:border-gray-700 hover:border-rose-200 dark:hover:border-rose-900"
+                            }`}
+                          >
+                            <ThumbsDown className="h-4 w-4 shrink-0" />
+                            <span>Kurang Sesuai</span>
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  });
+                })()}
               </div>
             </motion.div>
           </AnimatePresence>
