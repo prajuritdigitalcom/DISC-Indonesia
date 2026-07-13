@@ -707,7 +707,6 @@ Cek kepribadianmu gratis dan instan di ${window.location.origin}`;
           </div>
           <div className="text-right text-xs text-gray-500 font-medium">
             <p>Tanggal: {new Date().toLocaleDateString("id-ID")}</p>
-            <p>Situs: discindonesia.id</p>
           </div>
         </div>
 

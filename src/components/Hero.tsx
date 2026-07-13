@@ -83,7 +83,7 @@ export default function Hero({ onStartTest }: HeroProps) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.4 }}
-              className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-4 max-w-md mx-auto lg:mx-0 text-left text-sm text-gray-500 dark:text-gray-400"
+              className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-8 w-fit sm:w-auto max-w-md mx-auto lg:mx-0 text-left text-sm text-gray-500 dark:text-gray-400"
             >
               <div className="flex items-center space-x-2">
                 <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
