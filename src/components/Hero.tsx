@@ -108,27 +108,27 @@ export default function Hero({ onStartTest }: HeroProps) {
               initial={{ opacity: 0, scale: 0.85 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6 }}
-              className="relative w-80 h-80 sm:w-96 sm:h-96"
+              className="relative w-72 h-72 xs:w-80 xs:h-80 sm:w-96 sm:h-96"
             >
               {/* Spinning Ring */}
               <div className="absolute inset-0 rounded-full border-2 border-dashed border-rose-300 dark:border-rose-800 animate-spin-slow opacity-60"></div>
               
               {/* Main DISC Quadrant Ring (Clover-shaped layout) */}
-              <div className="absolute inset-4 grid grid-cols-2 gap-3 sm:gap-4 transform rotate-45">
+              <div className="absolute inset-3 sm:inset-4 grid grid-cols-2 gap-2 sm:gap-4 transform rotate-45">
                 {sectors.map((sec, idx) => (
                   <motion.div
                     key={idx}
                     whileHover={{ scale: 1.06, zIndex: 10 }}
-                    className={`rounded-[2rem] sm:rounded-[2.5rem] p-3 flex items-center justify-center border-2 shadow-lg dark:shadow-none select-none cursor-default transition-all ${sec.color}`}
+                    className={`rounded-[1.75rem] xs:rounded-[2rem] sm:rounded-[2.5rem] p-2 sm:p-3 flex items-center justify-center border-2 shadow-lg dark:shadow-none select-none cursor-default transition-all ${sec.color}`}
                   >
                     <div className="transform -rotate-45 flex flex-col items-center justify-center text-center h-full w-full p-1">
-                      <span className="text-3xl sm:text-4xl font-black tracking-tight leading-none mb-1">
+                      <span className="text-2xl sm:text-4xl font-black tracking-tight leading-none mb-0.5 sm:mb-1">
                         {sec.char}
                       </span>
-                      <h3 className="font-extrabold text-[12px] sm:text-[14px] tracking-tight leading-tight uppercase">
+                      <h3 className="font-extrabold text-[10px] sm:text-[14px] tracking-tight leading-tight uppercase">
                         {sec.name}
                       </h3>
-                      <p className="text-[10px] sm:text-[11px] font-semibold opacity-95 leading-normal mt-1.5 max-w-[100px] sm:max-w-[125px]">
+                      <p className="text-[9px] sm:text-[11px] font-semibold opacity-95 leading-normal mt-1 sm:mt-1.5 max-w-[85px] sm:max-w-[125px]">
                         {sec.desc}
                       </p>
                     </div>
@@ -139,8 +139,8 @@ export default function Hero({ onStartTest }: HeroProps) {
               {/* Center Core Badge */}
               <div className="absolute inset-[36%] rounded-full bg-white dark:bg-gray-950 shadow-xl border border-gray-100 dark:border-gray-800 flex items-center justify-center p-1 z-20">
                 <div className="w-full h-full rounded-full bg-rose-50 dark:bg-rose-950/50 flex flex-col items-center justify-center text-center">
-                  <span className="text-xs font-bold text-[#fe4c6f]">TES</span>
-                  <span className="text-base font-black text-gray-900 dark:text-white leading-tight">DISC</span>
+                  <span className="text-[10px] sm:text-xs font-bold text-[#fe4c6f]">TES</span>
+                  <span className="text-sm sm:text-base font-black text-gray-900 dark:text-white leading-tight">DISC</span>
                 </div>
               </div>
             </motion.div>

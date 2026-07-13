@@ -269,7 +269,7 @@ export default function TestInterface({
               </div>
 
               {/* Choices List */}
-              <div className="space-y-3.5 mt-6">
+              <div className="space-y-4 mt-6">
                 {currentQuestion.options.map((opt) => {
                   const isMost = currentAnswer.mostOptionId === opt.id;
                   const isLeast = currentAnswer.leastOptionId === opt.id;
@@ -277,7 +277,7 @@ export default function TestInterface({
                   return (
                     <div
                       key={opt.id}
-                      className={`flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-2xl border transition-all duration-200 ${
+                      className={`flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:p-5 rounded-2xl border transition-all duration-200 ${
                         isMost
                           ? "border-emerald-200 dark:border-emerald-900 bg-emerald-50/50 dark:bg-emerald-950/10"
                           : isLeast
@@ -285,36 +285,36 @@ export default function TestInterface({
                           : "border-gray-100 dark:border-gray-850 hover:border-gray-200 dark:hover:border-gray-800"
                       }`}
                     >
-                      <span className="text-sm sm:text-base font-semibold text-gray-800 dark:text-gray-200 leading-snug sm:pr-4 mb-3 sm:mb-0">
+                      <span className="text-sm sm:text-base font-semibold text-gray-800 dark:text-gray-200 leading-snug sm:pr-4 mb-4 sm:mb-0">
                         {opt.text}
                       </span>
 
                       {/* Selection Column buttons */}
-                      <div className="flex items-center space-x-2 self-end sm:self-auto">
+                      <div className="flex items-center gap-2.5 w-full sm:w-auto justify-end">
                         {/* MOST Button */}
                         <button
                           onClick={() => handleSelectOption(opt.id, "MOST")}
-                          className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+                          className={`flex-1 sm:flex-initial flex items-center justify-center space-x-1.5 px-4 py-2.5 sm:py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer min-h-[44px] sm:min-h-0 ${
                             isMost
-                              ? "bg-emerald-500 text-white border-emerald-500 shadow-md shadow-emerald-100 dark:shadow-none"
+                              ? "bg-emerald-500 text-white border-emerald-500 shadow-md shadow-emerald-100 dark:shadow-none font-extrabold"
                               : "bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400 hover:text-emerald-500 border-gray-200 dark:border-gray-700 hover:border-emerald-200 dark:hover:border-emerald-900"
                           }`}
                         >
-                          <ThumbsUp className="h-3.5 w-3.5 shrink-0" />
-                          <span>Paling</span>
+                          <ThumbsUp className="h-4 w-4 shrink-0" />
+                          <span>Paling Sesuai</span>
                         </button>
 
                         {/* LEAST Button */}
                         <button
                           onClick={() => handleSelectOption(opt.id, "LEAST")}
-                          className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+                          className={`flex-1 sm:flex-initial flex items-center justify-center space-x-1.5 px-4 py-2.5 sm:py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer min-h-[44px] sm:min-h-0 ${
                             isLeast
-                              ? "bg-rose-500 text-white border-rose-500 shadow-md shadow-rose-100 dark:shadow-none"
+                              ? "bg-rose-500 text-white border-rose-500 shadow-md shadow-rose-100 dark:shadow-none font-extrabold"
                               : "bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400 hover:text-rose-500 border-gray-200 dark:border-gray-700 hover:border-rose-200 dark:hover:border-rose-900"
                           }`}
                         >
-                          <ThumbsDown className="h-3.5 w-3.5 shrink-0" />
-                          <span>Kurang</span>
+                          <ThumbsDown className="h-4 w-4 shrink-0" />
+                          <span>Kurang Sesuai</span>
                         </button>
                       </div>
                     </div>

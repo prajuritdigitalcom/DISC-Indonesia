@@ -309,7 +309,6 @@ Cek kepribadianmu gratis dan instan di ${window.location.origin}`;
 <body>
   <div class="container">
     <div class="header">
-      <div class="logo">DISC <span>Indonesia</span></div>
       <div class="date">${today}</div>
     </div>
     
@@ -655,38 +654,38 @@ Cek kepribadianmu gratis dan instan di ${window.location.origin}`;
       <div className="max-w-5xl mx-auto px-4 print:px-0">
         
         {/* ACTION BAR (Hidden in print) */}
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-8 bg-white dark:bg-gray-950 border border-gray-150/40 dark:border-gray-800 p-4 rounded-2xl shadow-sm print:hidden">
-          <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8 bg-white dark:bg-gray-950 border border-gray-150/40 dark:border-gray-800 p-4 rounded-2xl shadow-sm print:hidden">
+          <div className="grid grid-cols-1 min-[450px]:grid-cols-3 sm:flex sm:flex-wrap items-center gap-2.5 w-full sm:w-auto">
             <button
               onClick={handlePrint}
-              className="flex items-center space-x-1.5 px-4 py-2.5 rounded-xl bg-gray-900 hover:bg-gray-850 dark:bg-gray-800 dark:hover:bg-gray-700 text-white font-bold text-sm shadow-md transition-colors cursor-pointer"
+              className="flex items-center justify-center space-x-1.5 px-4 py-3 sm:py-2.5 rounded-xl bg-gray-900 hover:bg-gray-850 dark:bg-gray-800 dark:hover:bg-gray-700 text-white font-bold text-sm shadow-md transition-colors cursor-pointer w-full sm:w-auto min-h-[44px] sm:min-h-0"
             >
-              <Printer className="h-4 w-4" />
+              <Printer className="h-4 w-4 shrink-0" />
               <span>Cetak Hasil / PDF</span>
             </button>
 
             <button
               onClick={handleCopySummary}
-              className="flex items-center space-x-1.5 px-4 py-2.5 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-750 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-850 font-bold text-sm transition-colors cursor-pointer"
+              className="flex items-center justify-center space-x-1.5 px-4 py-3 sm:py-2.5 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-750 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-850 font-bold text-sm transition-colors cursor-pointer w-full sm:w-auto min-h-[44px] sm:min-h-0"
             >
-              {copiedSummary ? <Check className="h-4 w-4 text-emerald-500" /> : <Share2 className="h-4 w-4" />}
-              <span>{copiedSummary ? "Tersalin!" : "Bagikan Ringkasan"}</span>
+              {copiedSummary ? <Check className="h-4 w-4 text-emerald-500 shrink-0" /> : <Share2 className="h-4 w-4 shrink-0" />}
+              <span>{copiedSummary ? "Tersalin!" : "Bagikan"}</span>
             </button>
 
             <button
               onClick={handleCopyLink}
-              className="flex items-center space-x-1.5 px-4 py-2.5 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-750 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-850 font-bold text-sm transition-colors cursor-pointer"
+              className="flex items-center justify-center space-x-1.5 px-4 py-3 sm:py-2.5 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-750 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-850 font-bold text-sm transition-colors cursor-pointer w-full sm:w-auto min-h-[44px] sm:min-h-0"
             >
-              {copiedLink ? <Check className="h-4 w-4 text-emerald-500" /> : <Copy className="h-4 w-4" />}
-              <span>{copiedLink ? "Link Tersalin!" : "Salin Link Tes"}</span>
+              {copiedLink ? <Check className="h-4 w-4 text-emerald-500 shrink-0" /> : <Copy className="h-4 w-4 shrink-0" />}
+              <span>{copiedLink ? "Salin Link" : "Salin Link"}</span>
             </button>
           </div>
 
           <button
             onClick={onReset}
-            className="flex items-center space-x-1.5 px-4 py-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-[#fe4c6f] font-bold text-sm transition-colors cursor-pointer ml-auto"
+            className="flex items-center justify-center space-x-1.5 px-4 py-3 sm:py-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-[#fe4c6f] font-bold text-sm transition-colors cursor-pointer w-full sm:w-auto min-h-[44px] sm:min-h-0 sm:ml-auto"
           >
-            <RotateCcw className="h-4 w-4" />
+            <RotateCcw className="h-4 w-4 shrink-0" />
             <span>Tes Ulang</span>
           </button>
         </div>
@@ -861,12 +860,12 @@ Cek kepribadianmu gratis dan instan di ${window.location.origin}`;
               </div>
 
               {/* Graph Switcher */}
-              <div className="flex bg-gray-50 dark:bg-gray-900 p-1 rounded-xl border border-gray-150/40 dark:border-gray-850 text-xs">
+              <div className="grid grid-cols-2 sm:flex sm:flex-row bg-gray-50 dark:bg-gray-900 p-1 rounded-xl border border-gray-150/40 dark:border-gray-850 text-xs gap-1 sm:gap-0">
                 <button
                   onClick={() => setActiveGraphTab("publik")}
-                  className={`px-3 py-1.5 rounded-lg font-semibold transition-colors cursor-pointer ${
+                  className={`px-3 py-2 sm:py-1.5 rounded-lg font-bold transition-colors cursor-pointer min-h-[38px] sm:min-h-0 ${
                     activeGraphTab === "publik"
-                      ? "bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm"
+                      ? "bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm font-extrabold"
                       : "text-gray-500 dark:text-gray-400 hover:text-gray-900"
                   }`}
                 >
@@ -874,9 +873,9 @@ Cek kepribadianmu gratis dan instan di ${window.location.origin}`;
                 </button>
                 <button
                   onClick={() => setActiveGraphTab("asli")}
-                  className={`px-3 py-1.5 rounded-lg font-semibold transition-colors cursor-pointer ${
+                  className={`px-3 py-2 sm:py-1.5 rounded-lg font-bold transition-colors cursor-pointer min-h-[38px] sm:min-h-0 ${
                     activeGraphTab === "asli"
-                      ? "bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm"
+                      ? "bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm font-extrabold"
                       : "text-gray-500 dark:text-gray-400 hover:text-gray-900"
                   }`}
                 >
@@ -884,9 +883,9 @@ Cek kepribadianmu gratis dan instan di ${window.location.origin}`;
                 </button>
                 <button
                   onClick={() => setActiveGraphTab("campuran")}
-                  className={`px-3 py-1.5 rounded-lg font-semibold transition-colors cursor-pointer ${
+                  className={`px-3 py-2 sm:py-1.5 rounded-lg font-bold transition-colors cursor-pointer min-h-[38px] sm:min-h-0 ${
                     activeGraphTab === "campuran"
-                      ? "bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm"
+                      ? "bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm font-extrabold"
                       : "text-gray-500 dark:text-gray-400 hover:text-gray-900"
                   }`}
                 >
@@ -894,9 +893,9 @@ Cek kepribadianmu gratis dan instan di ${window.location.origin}`;
                 </button>
                 <button
                   onClick={() => setActiveGraphTab("semua")}
-                  className={`px-3 py-1.5 rounded-lg font-semibold transition-colors cursor-pointer ${
+                  className={`px-3 py-2 sm:py-1.5 rounded-lg font-bold transition-colors cursor-pointer min-h-[38px] sm:min-h-0 ${
                     activeGraphTab === "semua"
-                      ? "bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm"
+                      ? "bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm font-extrabold"
                       : "text-gray-500 dark:text-gray-400 hover:text-gray-900"
                   }`}
                 >
@@ -1116,20 +1115,20 @@ Cek kepribadianmu gratis dan instan di ${window.location.origin}`;
         </div>
 
         {/* BOTTOM EXPORT ACTIONS BAR (Hidden in print) */}
-        <div className="mt-12 flex justify-center space-x-4 print:hidden">
+        <div className="mt-12 flex flex-col sm:flex-row justify-center items-center gap-4 print:hidden w-full max-w-md mx-auto sm:max-w-none">
           <button
             onClick={handlePrint}
-            className="flex items-center space-x-2 px-6 py-3.5 rounded-2xl bg-gray-900 hover:bg-gray-850 dark:bg-gray-800 dark:hover:bg-gray-700 text-white font-bold text-base shadow-lg transition-colors cursor-pointer"
+            className="flex items-center justify-center space-x-2 px-6 py-4 sm:py-3.5 rounded-2xl bg-gray-900 hover:bg-gray-850 dark:bg-gray-800 dark:hover:bg-gray-700 text-white font-bold text-base shadow-lg transition-colors cursor-pointer w-full sm:w-auto min-h-[44px]"
           >
-            <Printer className="h-5 w-5" />
+            <Printer className="h-5 w-5 shrink-0" />
             <span>Cetak atau Unduh PDF Resmi</span>
           </button>
           
           <button
             onClick={onReset}
-            className="flex items-center space-x-2 px-6 py-3.5 rounded-2xl bg-white dark:bg-gray-850 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 font-bold text-base hover:bg-gray-50 transition-colors cursor-pointer shadow-sm"
+            className="flex items-center justify-center space-x-2 px-6 py-4 sm:py-3.5 rounded-2xl bg-white dark:bg-gray-850 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 font-bold text-base hover:bg-gray-50 transition-colors cursor-pointer shadow-sm w-full sm:w-auto min-h-[44px]"
           >
-            <RotateCcw className="h-5 w-5" />
+            <RotateCcw className="h-5 w-5 shrink-0" />
             <span>Mulai Ulang Tes</span>
           </button>
         </div>
